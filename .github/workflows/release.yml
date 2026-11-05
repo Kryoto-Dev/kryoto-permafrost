@@ -1,0 +1,77 @@
+name: Release
+
+# Fires on a version bump: the job reads `version` from src-tauri/tauri.conf.json and stops
+# if that version is already tagged, or still says `unreleased` in CHANGELOG.md. To release,
+# bump the version, date its CHANGELOG heading, push.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src-tauri/tauri.conf.json'
+      - '.github/workflows/release.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: windows-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Version, and whether it is new
+        id: v
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v=$(node -p "require('./src-tauri/tauri.conf.json').version")
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+          if gh release view "v$v" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          elif grep -q "^## \[$v\] - unreleased" CHANGELOG.md; then
+            echo "v$v is still marked unreleased in CHANGELOG.md; nothing to do."
+            echo "needed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "needed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: pnpm/action-setup@v4
+        if: steps.v.outputs.needed == 'true'
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        if: steps.v.outputs.needed == 'true'
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@stable
+        if: steps.v.outputs.needed == 'true'
+
+      - name: Build
+        if: steps.v.outputs.needed == 'true'
+        shell: bash
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm app:build
+          cargo build --release -p permafrost-cli
+
+      - name: Publish
+        if: steps.v.outputs.needed == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v=${{ steps.v.outputs.version }}
+          mkdir out
+          cp target/release/kryoto-permafrost.exe "out/Kryoto Permafrost $v.exe"
+          cp target/release/permafrost.exe "out/permafrost-cli-$v.exe"
+          (cd out && sha256sum *.exe > SHA256SUMS.txt)
+          awk "/^## \[$v\]/{f=1;next} /^## \[/{f=0} f" CHANGELOG.md > notes.md
+          gh release create "v$v" out/* --title "Kryoto Permafrost $v" --notes-file notes.md

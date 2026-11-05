@@ -1,0 +1,15 @@
+[package]
+name = "permafrost-cli"
+description = "Freeze game folders and thaw .kryo archives from a terminal."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "permafrost"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1"
+kryo = { path = "../kryo" }

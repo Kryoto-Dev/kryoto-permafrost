@@ -1,0 +1,52 @@
+[package]
+name = "kryoto-setup"
+description = "The setup a player runs: thaws a .kryo into a game folder."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "kryoto-setup"
+path = "src/main.rs"
+
+[features]
+# Lets `--shot <page> <file.bmp>` draw a page to a file, for screenshots.
+shots = []
+
+[dependencies]
+anyhow = "1"
+fontdue = "0.9"
+kryo = { path = "../kryo", default-features = false }
+postcard = { version = "1", default-features = false, features = ["use-std"] }
+serde = { version = "1", features = ["derive"] }
+
+[target.'cfg(windows)'.dependencies.windows]
+version = "0.62"
+features = [
+  "Win32_Foundation",
+  "Win32_Graphics_Dwm",
+  "Win32_Graphics_Gdi",
+  "Win32_Media",
+  "Win32_Media_Audio",
+  "Win32_Media_Multimedia",
+  "Win32_Security",
+  "Win32_Storage_FileSystem",
+  "Win32_System_Com",
+  "Win32_System_DataExchange",
+  "Win32_System_Diagnostics_Debug",
+  "Win32_System_LibraryLoader",
+  "Win32_System_Memory",
+  "Win32_System_Ole",
+  "Win32_System_Registry",
+  "Win32_System_SystemInformation",
+  "Win32_System_Threading",
+  "Win32_UI_HiDpi",
+  "Win32_UI_Input_KeyboardAndMouse",
+  "Win32_UI_Shell",
+  "Win32_UI_Shell_Common",
+  "Win32_UI_WindowsAndMessaging",
+]
+
+[build-dependencies]
+embed-resource = "3"

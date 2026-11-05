@@ -1,0 +1,3 @@
+# The setup has to start on a PC with nothing installed, so nothing may link the C runtime DLLs.
+[target.x86_64-pc-windows-msvc]
+rustflags = ["-C", "target-feature=+crt-static"]

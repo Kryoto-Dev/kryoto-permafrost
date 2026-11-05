@@ -1,0 +1,34 @@
+[package]
+name = "kryoto-permafrost"
+description = "Freeze a game folder into a .kryo repack with its own setup."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+build = "build.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+anyhow = "1"
+base64 = "0.22"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp", "bmp"] }
+kryo = { path = "../crates/kryo" }
+rfd = "0.15"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri = { version = "2", features = [] }
+ureq = { version = "2", features = ["json"] }
+
+[target.'cfg(windows)'.dependencies.windows]
+version = "0.62"
+features = [
+  "Win32_Foundation",
+  "Win32_System_LibraryLoader",
+  "Win32_System_SystemInformation",
+  "Win32_UI_WindowsAndMessaging",
+]
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]

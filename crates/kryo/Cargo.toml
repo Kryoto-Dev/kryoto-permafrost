@@ -1,0 +1,33 @@
+[package]
+name = "kryo"
+description = "The .kryo archive format: freeze a game folder, thaw it back bit for bit."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+default = ["freeze"]
+# Everything that makes a .kryo. The setup only thaws, so it leaves this out.
+freeze = ["dep:fastcdc", "dep:globset", "dep:miniz_oxide", "dep:rayon", "dep:walkdir"]
+
+[dependencies]
+anyhow = "1"
+blake3 = "1"
+crc32fast = "1"
+lepton_jpeg = "0.5"
+liblzma = { version = "0.4", features = ["static"] }
+postcard = { version = "1", default-features = false, features = ["use-std"] }
+ppmd-rust = "1"
+preflate-rs = "0.7"
+serde = { version = "1", features = ["derive"] }
+zstd = { version = "0.13", default-features = false, features = ["arrays", "zstdmt"] }
+
+fastcdc = { version = "3", optional = true }
+globset = { version = "0.4", optional = true }
+miniz_oxide = { version = "0.8", optional = true }
+rayon = { version = "1", optional = true }
+walkdir = { version = "2", optional = true }
+
+[dev-dependencies]
+miniz_oxide = "0.8"

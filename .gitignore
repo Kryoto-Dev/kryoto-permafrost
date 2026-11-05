@@ -1,0 +1,9 @@
+node_modules/
+dist/
+target/
+.tmp/
+src-tauri/gen/
+src-tauri/stub/*.exe
+*.log
+.env*
+!.env.example
