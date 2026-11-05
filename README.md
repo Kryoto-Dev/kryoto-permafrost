@@ -41,7 +41,7 @@ in. The results page compares the repack with the Kryoto download.
 needs nothing installed. Your cover art sits frozen in ASCII ice and melts as
 the game unpacks. It carries the game's icon, and a tune of its own, or yours.
 
-**Does what repackers do.** Optional languages and bonus content as separate downloads. Split
+**Additional features.** Optional languages and bonus content as separate downloads. Split
 parts for upload limits. Runtimes installed quietly. Shortcuts, an uninstaller, the Windows
 programs list. Pause, and carry on after a stop, on both the freeze and the install. A limit on
 memory for weak PCs. Silent installs.
