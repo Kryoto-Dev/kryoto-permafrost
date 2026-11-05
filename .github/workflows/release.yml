@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - 'src-tauri/tauri.conf.json'
+      - 'CHANGELOG.md'
       - '.github/workflows/release.yml'
   workflow_dispatch:
 
