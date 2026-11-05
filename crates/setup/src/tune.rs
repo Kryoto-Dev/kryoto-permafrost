@@ -131,7 +131,7 @@ fn play(music: Option<Vec<i16>>, muted: &AtomicBool, stop: &AtomicBool) -> windo
     let mut position = 0usize;
     let mut fade = 0f32;
     let mut fill = |buffer: &mut [i16]| {
-        for frame in buffer.chunks_exact_mut(2) {
+        for frame in buffer.as_chunks_mut::<2>().0 {
             let target = if muted.load(Ordering::Relaxed) { 0.0 } else { 1.0 };
             fade += (target - fade) * 0.0006;
             let (l, r) = match &music {

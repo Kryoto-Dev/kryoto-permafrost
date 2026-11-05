@@ -133,7 +133,7 @@ fn read_wav(path: &Path) -> Result<Vec<i16>> {
             }
             let end = (body + len).min(data.len());
             let mut samples = Vec::with_capacity((end - body) / 2 * (3 - channels as usize));
-            for pair in data[body..end].chunks_exact(2) {
+            for pair in data[body..end].as_chunks::<2>().0 {
                 let value = i16::from_le_bytes([pair[0], pair[1]]);
                 samples.push(value);
                 if channels == 1 {
